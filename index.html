@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Monish 💕</title>
+    <title>Love You Janu 💕</title>
     <style>
         * {
             margin: 0;
@@ -466,6 +466,9 @@
     <script>
         const messages = [
             { text: "Hey Janu! 💕", time: "now" },
+            { text: "I'm so sorry... I know I'm late and yesterday was Valentine's Day... 🥺", time: "now" },
+            { text: "But you know what? I don't need a special day to tell you how much I love you! ❤️", time: "now" },
+            { text: "Every day with you is Valentine's Day for me! 💕", time: "now" },
             { text: "I can't stop thinking about you...", time: "now" },
             { type: "letter", title: "Only For You My Love 💝", text: "You are my whole world! You are the most beautiful girl I have ever seen in my life. Your smile makes my heart skip a beat. When I hear your voice, I feel so peaceful and happy. I think about you every second of every day. You are my dream girl, my princess, my everything! I want to be with you forever and ever. You make me the happiest person in this world my love! 💕", time: "now" },
             { text: "I need to tell you something important... ❤️", time: "now" },
@@ -504,9 +507,11 @@
         function addMessage(text, type = "text", isSent = false) {
             let messageText = text;
             let messageTime = "now";
+            let messageObj = null;
             
             // Handle object or string
             if (typeof text === 'object' && text !== null) {
+                messageObj = text;
                 messageText = text.text || '';
                 messageTime = text.time || "now";
             }
@@ -514,11 +519,11 @@
             const msgDiv = document.createElement('div');
             msgDiv.className = 'message ' + (isSent ? 'sent' : 'received');
             
-            if (type === "letter") {
+            if (type === "letter" && messageObj) {
                 msgDiv.innerHTML = `
                     <div class="letter-card">
-                        <h4>💝 ${messageText.title || ''}</h4>
-                        <p>${messageText.text || ''}</p>
+                        <h4>💝 ${messageObj.title || ''}</h4>
+                        <p>${messageObj.text || ''}</p>
                     </div>
                     <div class="message-time">${messageTime}</div>
                 `;
@@ -554,7 +559,7 @@
                     }
                     
                     // Show camera tooltip after Valentine question
-                    if (messageIndex === 5) {
+                    if (messageIndex === 8) {
                         setTimeout(showCameraTooltip, 1500);
                     }
                     
