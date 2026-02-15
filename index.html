@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Monish 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .phone {
+            width: 100%;
+            max-width: 380px;
+            background: #fff;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.2);
+            height: 100vh;
+            max-height: 750px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            padding: 20px 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .header-info h3 {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .header-info p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .chat-area {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.5;
+            animation: slideIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .received {
+            background: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .sent {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .heart-reaction {
+            position: absolute;
+            bottom: -8px;
+            font-size: 14px;
+            animation: floatUp 1s ease forwards;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-15px); opacity: 0; }
+        }
+
+        .typing {
+            display: none;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            align-self: flex-start;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            width: fit-content;
+        }
+
+        .typing.show {
+            display: flex;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+
+        .chat-input {
+            padding: 12px 15px;
+            background: white;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chat-input button {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .chat-input button:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-input .photo-btn {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            position: relative;
+        }
+
+        .camera-tooltip {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 3px 15px rgba(255,105,180,0.4);
+            animation: tooltipPulse 1.5s ease-in-out infinite;
+            z-index: 100;
+        }
+
+        .camera-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 20px;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #ff1493;
+        }
+
+        @keyframes tooltipPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .camera-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff0000;
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            animation: badgePulse 1.2s ease-in-out infinite;
+            box-shadow: 0 2px 8px rgba(255,0,0,0.4);
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 8px rgba(255,0,0,0.4); }
+            50% { transform: scale(1.2); box-shadow: 0 3px 12px rgba(255,0,0,0.6); }
+        }
+
+        .photo-gallery {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 100;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .photo-gallery.show {
+            display: block;
+        }
+
+        .gallery-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        .gallery-title {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .img-in-chat {
+            width: 220px;
+            height: auto;
+            max-height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .img-in-chat img {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .letter-card {
+            background: linear-gradient(135deg, #fff8fa, #ffe4e9);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 5px 0;
+            box-shadow: 0 2px 10px rgba(255, 105, 180, 0.1);
+        }
+
+        .letter-card h4 {
+            color: #ff69b4;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .letter-card p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .photo-message {
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(135deg, #ff69b4, #ff8a80);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            overflow: hidden;
+        }
+
+        .photo-message img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: fall 6s linear forwards;
+            opacity: 0;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    
+    <div class="phone">
+        <div class="chat-header">
+            <div class="avatar">
+                <img src="images/monish.jpg" onerror="this.style.display='none'" alt="Monish">
+            </div>
+            <div class="header-info">
+                <h3>Monish 💕</h3>
+                <p id="headerStatus">online</p>
+            </div>
+        </div>
+
+        <div class="chat-area" id="chatArea">
+            <div class="typing" id="typing">
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <button class="photo-btn" onclick="showPhotoGallery()" id="cameraBtn">
+                📷
+            </button>
+            <input type="text" id="messageInput" placeholder="Type your message..." onkeypress="handleEnter(event)">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+
+        <div class="photo-gallery" id="photoGallery">
+            <span class="gallery-close" onclick="hidePhotoGallery()">×</span>
+            <h2 class="gallery-title">📸 Send Your Cute Photo baby !</h2>
+            <p style="color: white; text-align: center; margin-bottom: 15px; font-size: 12px; opacity: 0.8;">Tap your beautiful photo to send! Can't wait to see you! 👆</p>
+            <div class="gallery-grid" id="galleryGrid">
+                <div class="gallery-item" onclick="sendPhoto('janu1')">
+                    <img src="images/janu1.jpg" onerror="this.style.display='none'" alt="Photo 1">
+                </div>
+                <div class="gallery-item" onclick="sendPhoto('janu2')">
+                    <img src="images/janu2.jpg" onerror="this.style.display='none'" alt="Photo 2">
+                </div>
+                <div class="gallery-item" onclick="sendPhoto('janu3')">
+                    <img src="images/janu3.jpg" onerror="this.style.display='none'" alt="Photo 3">
+                </div>
+            </div>
+            <p style="color: white; text-align: center; margin-top: 20px; font-size: 13px;">👆 Tap to send your photo!</p>
+        </div>
+    </div>
+
+    <script>
+        const messages = [
+            { text: "Hey Janu! 💕", time: "now" },
+            { text: "I can't stop thinking about you...", time: "now" },
+            { type: "letter", title: "Only For You My Love 💝", text: "You are my whole world! You are the most beautiful girl I have ever seen in my life. Your smile makes my heart skip a beat. When I hear your voice, I feel so peaceful and happy. I think about you every second of every day. You are my dream girl, my princess, my everything! I want to be with you forever and ever. You make me the happiest person in this world my love! 💕", time: "now" },
+            { text: "I need to tell you something important... ❤️", time: "now" },
+            { type: "photo", time: "now" },
+            { text: "Will you be my Valentine? Please say yes! 🥺💕", time: "now" }
+        ];
+
+        const replies = [
+            "Aww I love you too! 💕",
+            "You're the sweetest! 🥰",
+            "Can't wait to see you! 💖",
+            "Forever yours! 💝",
+            "My heart belongs to you! ❤️",
+            "You're my everything! 💕",
+            "Missing you right now! 🥺",
+            "Will you be my Valentine? 💕"
+        ];
+
+        let messageIndex = 0;
+        const chatArea = document.getElementById('chatArea');
+        const typing = document.getElementById('typing');
+        const headerStatus = document.getElementById('headerStatus');
+
+        function showTyping() {
+            typing.classList.add('show');
+            headerStatus.textContent = 'typing...';
+            chatArea.insertBefore(typing, chatArea.lastElementChild);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function hideTyping() {
+            typing.classList.remove('show');
+            headerStatus.textContent = 'online';
+        }
+
+        function addMessage(text, type = "text", isSent = false) {
+            let messageText = text;
+            let messageTime = "now";
+            
+            // Handle object or string
+            if (typeof text === 'object' && text !== null) {
+                messageText = text.text || '';
+                messageTime = text.time || "now";
+            }
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message ' + (isSent ? 'sent' : 'received');
+            
+            if (type === "letter") {
+                msgDiv.innerHTML = `
+                    <div class="letter-card">
+                        <h4>💝 ${messageText.title || ''}</h4>
+                        <p>${messageText.text || ''}</p>
+                    </div>
+                    <div class="message-time">${messageTime}</div>
+                `;
+            } else if (type === "photo") {
+                msgDiv.innerHTML = `
+                    <div class="photo-message">👨‍❤️‍💋‍👩</div>
+                    <div class="message-time">${messageTime}</div>
+                `;
+            } else {
+                msgDiv.innerHTML = `
+                    ${messageText}
+                    <div class="message-time">${messageTime}</div>
+                `;
+            }
+            
+            chatArea.insertBefore(msgDiv, typing);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function autoPlayMessages() {
+            if (messageIndex < messages.length) {
+                showTyping();
+                setTimeout(() => {
+                    hideTyping();
+                    const msg = messages[messageIndex];
+                    
+                    if (msg.type === "letter") {
+                        addMessage(msg, "letter");
+                    } else if (msg.type === "photo") {
+                        addMessage(msg, "photo");
+                    } else {
+                        addMessage(msg.text, "text");
+                    }
+                    
+                    // Show camera tooltip after Valentine question
+                    if (messageIndex === 5) {
+                        setTimeout(showCameraTooltip, 1500);
+                    }
+                    
+                    messageIndex++;
+                    setTimeout(autoPlayMessages, 2000);
+                }, 1500);
+            }
+        }
+
+        function showCameraTooltip() {
+            const cameraBtn = document.getElementById('cameraBtn');
+            if (cameraBtn && !document.querySelector('.camera-tooltip')) {
+                const tooltip = document.createElement('div');
+                tooltip.className = 'camera-tooltip';
+                tooltip.innerHTML = 'click this ! 📸';
+                cameraBtn.appendChild(tooltip);
+                
+                const badge = document.createElement('div');
+                badge.className = 'camera-badge';
+                badge.innerHTML = '1';
+                cameraBtn.appendChild(badge);
+                
+                // Hide when gallery is opened
+                cameraBtn.addEventListener('click', function() {
+                    const existingTooltip = document.querySelector('.camera-tooltip');
+                    const existingBadge = document.querySelector('.camera-badge');
+                    if (existingTooltip) existingTooltip.remove();
+                    if (existingBadge) existingBadge.remove();
+                });
+            }
+        }
+
+        let replyCount = 0;
+        const effects = ['hearts', 'kisses', 'sparkles'];
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim().toLowerCase();
+            
+            if (text) {
+                const originalText = input.value.trim();
+                addMessage({ text: originalText, time: "now" }, "text", true);
+                input.value = '';
+                
+                // Smart AI replies based on keywords
+                let reply = getSmartReply(text);
+                
+                setTimeout(() => {
+                    showTyping();
+                    setTimeout(() => {
+                        hideTyping();
+                        addMessage({ text: reply, time: "now" });
+                        
+                        // After 2 seconds, trigger special effect
+                        setTimeout(() => {
+                            const effectType = effects[replyCount % effects.length];
+                            if (effectType === 'hearts') {
+                                createHeartRain();
+                            } else if (effectType === 'kisses') {
+                                createKissRain();
+                            } else {
+                                createSparkleRain();
+                            }
+                            
+                            replyCount++;
+                        }, 2000);
+                        
+                    }, 1500);
+                }, 500);
+            }
+        }
+
+        function showInstagramReminder() {
+            const reminder = document.createElement('div');
+            reminder.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #ff69b4, #ff1493);
+                color: white;
+                padding: 35px 25px;
+                border-radius: 25px;
+                text-align: center;
+                z-index: 200;
+                animation: popIn 0.5s ease;
+                box-shadow: 0 10px 50px rgba(255,105,180,0.5);
+                max-width: 320px;
+            `;
+            
+            reminder.innerHTML = `
+                <div style="font-size: 50px; margin-bottom: 15px;">🥰</div>
+                <div style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">Hey Janu! Come to Instagram! 💕</div>
+                <div style="font-size: 15px; opacity: 0.95; line-height: 1.6;">I'm waiting for you there! Come fast! Miss you so much! 😘💋</div>
+                <div style="font-size: 26px; margin-top: 15px;">💋💖💋</div>
+            `;
+            
+            document.body.appendChild(reminder);
+            
+            // Auto close after 6 seconds
+            setTimeout(() => {
+                reminder.style.animation = 'fadeOut 0.5s ease forwards';
+                setTimeout(() => reminder.remove(), 500);
+            }, 6000);
+        }
+
+        function createKissRain() {
+            const container = document.getElementById('hearts');
+            const kisses = ['💋', '😘', '💏', '🤗'];
+            
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const kiss = document.createElement('div');
+                    kiss.className = 'heart';
+                    kiss.innerHTML = kisses[Math.floor(Math.random() * kisses.length)];
+                    kiss.style.left = Math.random() * 100 + 'vw';
+                    kiss.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                    container.appendChild(kiss);
+                    setTimeout(() => kiss.remove(), 7000);
+                }, i * 100);
+            }
+        }
+
+        function createSparkleRain() {
+            const container = document.getElementById('hearts');
+            const sparkles = ['✨', '🌟', '💫', '⭐'];
+            
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'heart';
+                    sparkle.innerHTML = sparkles[Math.floor(Math.random() * sparkles.length)];
+                    sparkle.style.left = Math.random() * 100 + 'vw';
+                    sparkle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                    container.appendChild(sparkle);
+                    setTimeout(() => sparkle.remove(), 7000);
+                }, i * 100);
+            }
+        }
+        
+        function getSmartReply(text) {
+            // Love you
+            if (text.includes('love') || text.includes('love u')) {
+                const replies = [
+                    "Aww I love you too! 💕 You own my heart completely!",
+                    "Love you more than words can say! 🥺 You're my whole world! 💖",
+                    "My heart beats only for you! 💝 I love you so much!",
+                    "Love you infinity times infinity! You're my everything! 💕",
+                    "I fall for you more every single day! You mean the world to me! 💖"
+                ];
+                return replies[Math.floor(Math.random() * replies.length)];
+            }
+            
+            // Miss you
+            if (text.includes('miss') || text.includes('missing')) {
+                const replies = [
+                    "I miss you so much! 🥺 My heart aches without you! 💕",
+                    "Missing you like crazy! When can I see your beautiful face? 💖",
+                    "I think about you every second! Come back to me soon! 💝",
+                    "I hate being away from you! Need to hold you in my arms! 🥺💕"
+                ];
+                return replies[Math.floor(Math.random() * replies.length)];
+            }
+            
+            // Good morning
+            if (text.includes('morning') || text.includes('gm')) {
+                return "Good morning my angel! ☀️ Waking up and thinking of you makes me so happy! You're my sunshine! 💕";
+            }
+            
+            // Good night
+            if (text.includes('night') || text.includes('gn') || text.includes('sleep')) {
+                return "Good night my love! 🌙 Dream of me okay? I'll be dreaming of you! Sleep tight! 💕";
+            }
+            
+            // How are you
+            if (text.includes('how') && (text.includes('are') || text.includes('doing'))) {
+                return "I'm perfect now that you're here! 💕 How is my beautiful girl doing? 🥺";
+            }
+            
+            // Cute / sweet
+            if (text.includes('cute') || text.includes('sweet') || text.includes('adorable')) {
+                return "Aww you're making me blush so much! 🥰 But you're the cutest person I've ever seen! 💕";
+            }
+            
+            // Kiss / hug / heart
+            if (text.includes('kiss') || text.includes('hug') || text.includes('heart')) {
+                return "I want to kiss you so badly right now! 💋 Come here! I need you in my arms! 💕";
+            }
+            
+            // Yes / yeah
+            if (text.includes('yes') || text.includes('yeah') || text.includes('sure') || text.includes('ok')) {
+                return "Yay! You just made me the happiest! 🥺 I love you so much! 💕";
+            }
+            
+            // No / not
+            if (text.includes('no') || text.includes('not') || text.includes("don't") || text.includes('dont')) {
+                return "Aww why? 🥺 But I still love you so much! You're everything to me! 💕";
+            }
+            
+            // Maybe
+            if (text.includes('maybe') || text.includes('not sure') || text.includes('idk')) {
+                return "Take your time! I'm not going anywhere! I'll wait for you forever! 💕";
+            }
+            
+            // Shy
+            if (text.includes('shy') || text.includes('embarrassed')) {
+                return "You're so adorable when you're shy! 🥰 It makes me want to hug you tight! 💕";
+            }
+            
+            // Sad / cry
+            if (text.includes('sad') || text.includes('cry') || text.includes('upset')) {
+                return "Don't cry! 🥺 I'm here for you always! You mean everything to me! Let me make you smile! 💕";
+            }
+            
+            // Angry / mad
+            if (text.includes('angry') || text.includes('mad')) {
+                return "Don't be angry at me! 🥺 I'm sorry! I love you so much! Please forgive me? 💕";
+            }
+            
+            // Hungry
+            if (text.includes('hungry') || text.includes('food')) {
+                return "Haha are you hungry for food or for me? 😄 I want to feed you and take care of you! 💕";
+            }
+            
+            // Lol / haha / laugh
+            if (text.includes('haha') || text.includes('lol') || text.includes('hehe') || text.includes('😂')) {
+                return "Your laugh is the most beautiful sound! 🥰 I want to make you laugh forever! I love you! 💕";
+            }
+            
+            // Photo / selfie
+            if (text.includes('selfie') || text.includes('photo') || text.includes('pic') || text.includes('camera')) {
+                return "Send me your photo! 🥺 I want to see your pretty face! I miss looking at you! 📸💕";
+            }
+            
+            // Thank you
+            if (text.includes('thank') || text.includes('thanks')) {
+                return "Anything for you! 🥰 I'd do anything to make you happy! Love you so much! 💕";
+            }
+            
+            // Sorry
+            if (text.includes('sorry') || text.includes('apologize')) {
+                return "No need to say sorry! You're perfect to me! I love you just as you are! 💕";
+            }
+            
+            // Thinking
+            if (text.includes('thinking') || text.includes('thought')) {
+                return "I hope you're thinking about me! 🥰 I never stop thinking about you! You're always on my mind! 💕";
+            }
+            
+            // Bored
+            if (text.includes('bored') || text.includes('boring')) {
+                return "Talk to me! 😄 I love talking to you! You make everything fun! You're never boring! 💕";
+            }
+            
+            // Tired / sleepy
+            if (text.includes('tired') || text.includes('sleepy') || text.includes('sleep')) {
+                return "Aww rest well! 💕 I'll be right here when you wake up! Sweet dreams my love! 🌙";
+            }
+            
+            // Busy / work
+            if (text.includes('busy') || text.includes('work') || text.includes('study')) {
+                return "Okay do your work! 🥺 I'll be waiting here for you! I miss you already! Love you! 💕";
+            }
+            
+            // Pretty / beautiful / handsome
+            if (text.includes('pretty') || text.includes('beautiful') || text.includes('handsome') || text.includes('cute')) {
+                return "Stop it! 🥰 You're making me blush! But you're the most beautiful girl in the world! 💕";
+            }
+            
+            // Jealous
+            if (text.includes('jealous') || text.includes('envy')) {
+                return "Don't be jealous! 🥺 You're my only one! I only have eyes for you! Only you! 💕";
+            }
+            
+            // Mine / my
+            if (text.includes('mine') || text.includes('only')) {
+                return "And you're all mine! 💕 We belong together forever! I love you! 🥰";
+            }
+            
+            // Meeting / date
+            if (text.includes('meet') || text.includes('date') || text.includes('see')) {
+                const replies = [
+                    "Yes let's meet! 🥺 I want to see you so badly! I need you! 💕",
+                    "Please tell me when! I'm free anytime for you! I miss you! 😘 Love you!",
+                    "I can't wait to see you! 💕 It's going to be perfect! Just you and me!"
+                ];
+                return replies[Math.floor(Math.random() * replies.length)];
+            }
+            
+            // Default flirty reply
+            const defaultReplies = [
+                "You're so sweet! 🥰 Love you so so much! 💕",
+                "You make my heart flutter! 🥺 I love you!",
+                "You're the best thing in my life! 💖 Love you more than anything!",
+                "I love talking to you! You're my favorite person ever! 💕",
+                "Can't stop thinking about you! 🥺💕 You're always in my heart!",
+                "You make me the happiest person! I love you so much! 💖",
+                "Aww you're the sweetest! 🥰 Love you to the moon and back! 💕",
+                "I love you more than anything! You're my whole world! 💖",
+                "You mean everything to me! 🥺💕 I love you so much!",
+                "You're my favorite person in the whole world! 💝 Love you!",
+                "Every message from you makes me smile! 💕 Love you!",
+                "You're so special to me! 🥰 I love you so much! 💖",
+                "I adore you! 💝 You're my everything!",
+                "You're my one and only! 🥺 Love you so much! 💕",
+                "That's so sweet of you! 🥰 I love you so much!"
+            ];
+            return defaultReplies[Math.floor(Math.random() * defaultReplies.length)];
+        }
+
+        function handleEnter(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        function showPhotoGallery() {
+            document.getElementById('photoGallery').classList.add('show');
+        }
+
+        function hidePhotoGallery() {
+            document.getElementById('photoGallery').classList.remove('show');
+        }
+
+        function sendPhoto(photoName) {
+            hidePhotoGallery();
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message sent';
+            msgDiv.innerHTML = `
+                <div class="img-in-chat">
+                    <img src="images/${photoName}.jpg" onerror="this.src='images/${photoName}.png'" alt="Photo">
+                </div>
+                <div class="message-time">now</div>
+            `;
+            
+            chatArea.insertBefore(msgDiv, typing);
+            chatArea.scrollTop = chatArea.scrollHeight;
+            
+            // AI reply for photo
+            setTimeout(() => {
+                showTyping();
+                setTimeout(() => {
+                    hideTyping();
+                    const photoReplies = [
+                        "Wow you're so beautiful! 🥰💕",
+                        "That's a gorgeous photo! 💖",
+                        "Aww I love this picture of you! 💕",
+                        "You're so pretty! 🥺💖",
+                        "This made my day! You're amazing! 💝",
+                        "God you're so cute! I want to kiss you right now! 😘💋",
+                        "This photo is making me blush! 🥰💕",
+                        "Damm you're hot! 🔥💕",
+                        "I can stare at this photo forever! 🥺💖",
+                        "You're making me fall for you all over again! 💕",
+                        "So beautiful! My heart just skipped a beat! 💗",
+                        "This is unfair! You're too pretty! 😳💕",
+                        "Aish! You're making me shy! 🥰💖",
+                        "Wow just wow! You're stunning! 💝",
+                        "I swear you're the prettiest person ever! 💕🥺"
+                    ];
+                    addMessage({ text: photoReplies[Math.floor(Math.random() * photoReplies.length)], time: "now" });
+                    
+                    setTimeout(() => {
+                        createKissRain();
+                        
+                        // Show Instagram reminder after 10 seconds
+                        setTimeout(() => {
+                            showInstagramReminder();
+                        }, 10000);
+                    }, 2000);
+                }, 1500);
+            }, 500);
+        }
+
+        function createHeartRain() {
+            const container = document.getElementById('hearts');
+            const hearts = ['💕', '💖', '💗', '💘', '💝'];
+            
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                    container.appendChild(heart);
+                    setTimeout(() => heart.remove(), 7000);
+                }, i * 100);
+            }
+        }
+
+        setTimeout(autoPlayMessages, 1000);
+        setInterval(createHeartRain, 5000);
+    </script>
+</body>
+</html>
